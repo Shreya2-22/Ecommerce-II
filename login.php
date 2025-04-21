@@ -1,17 +1,22 @@
 <?php
 include('connection.inc.php');
 require('function.inc.php');
+$msg = '';
 if(isset($_POST['submit'])){
-    echo $username = get_safe_value($con, $_POST['username']);
-    echo $password = get_safe_value($con, $_POST['password']);
+    $username = get_safe_value($con, $_POST['username']);
+    $password = get_safe_value($con, $_POST['password']);
     $sql = "SELECT * FROM admin_users WHERE username='$username' AND password='$password'";
     $res = mysqli_query($con, $sql);
     $count = mysqli_num_rows($res);
     if($count > 0){
-        
+        $_SESSION['ADMIN_LOGIN'] = 'yes';
+        $_SESSION['ADMIN_USERNAME'] = $username;
+        header('location:categories.php');
+        die();
    }else{
       $msg = "Please enter correct login details";
    }
+}
 ?>
 
 <!doctype html>
@@ -47,6 +52,7 @@ if(isset($_POST['submit'])){
                         <input type="password" name="password" class="form-control" placeholder="Password" required>
                      </div>
                      <button type="submit" name="submit" class="btn btn-success btn-flat m-b-30 m-t-30">Sign in</button>
+                     <div class="field_error"><?php echo $msg ?></div>
 					</form>
                </div>
             </div>
